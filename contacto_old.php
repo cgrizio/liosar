@@ -114,8 +114,8 @@ include ('head.php');
               $email = $_POST['email'];
               $subject = 'Mensaje enviado desde LIOSAR.com';   
               $mensaje = $_POST['message'];
-              //$para = 'info@liosar.com';
-              $para = 'alberto.lagoria@gmail.com';
+              $para = 'info@liosar.com';
+
               //Componemos cuerpo correo.
               $msjCorreo = "Nombre: " . $nombre;
               $msjCorreo .= "\r\n";
@@ -125,28 +125,32 @@ include ('head.php');
               $msjCorreo .= "\r\n";
 
               $secretKey = "6Ld-KqoUAAAAAPZYgeBa6wkD0zyKHnCpQITaUuWv";
-              $response = null;
-              $reCaptcha = new ReCaptcha($secret);
+              $responseKey = $_POST['g-recaptcha-response'];
+              $UserIP = $_SERVER['REMOTE_ADDR'];
+              $url = "https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$responseKey&remoteip=$UserIP";
 
-              if ($_POST["g-recaptcha-response"]) {
-                $response = $reCaptcha->verifyResponse(
-                    $_SERVER["REMOTE_ADDR"],
-                    $_POST["g-recaptcha-response"]
-                );
-              }
+              $response = file_get_contents($url);
+              $response = json_decode($response);
 
-              if ($response != null && $response->success) {
-                mail ($para, $subject, $msjCorreo, $headers);
+            if (mail($para, $subject, $msjCorreo, $headers)) {
                 echo "<script language='javascript'>
-                alert('Mensaje enviado, muchas gracias.');
+                    alert('Mensaje enviado, muchas gracias.');
                 </script>";
-              } else {
+            } else {
                 echo "<script language='javascript'>
                     alert('El envío de su mensaje ha fallado.');
                 </script>";
-
-              }
+            }
           }
+
+          /*if ($response->success)
+          {
+            mail ($para, $subject, $msjCorreo, $headers);
+            echo "Gracias por contactarnos, le responderemos a la brevedad.";
+          }else{
+            echo "Su verificación falló, por favor, inténtelo de nuevo.";
+          }*/
+
         ?>
 
     </form>
@@ -202,6 +206,7 @@ window.onclick = function(event) {
     }
 }
 </script>
+
 
 </body>
 </html>
