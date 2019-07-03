@@ -1,5 +1,6 @@
 <?php
 include ('head.php');
+require_once "recaptchalib.php";
 ?>
 
 <body>
@@ -82,7 +83,7 @@ include ('head.php');
       formulario y un representante de nuestra empresa se comunicará con usted a la brevedad.
     </p>
 
-    <form action="#" id="formulario_popup" class="formulario-modal" method="post">
+    <form action="?" id="formulario_popup" class="formulario-modal" method="post">
         <div class="form-group">
           <label for="firs_tname">Nombre*</label>
           <input type="text" name="first_name" id="first_name" class="input_contacto" class="form-control" required/>
@@ -103,7 +104,6 @@ include ('head.php');
         <br/>
         <button class="formBtn boton-enviar-modal" type="submit" value="ENVIAR" name="submit" id="submit">ENVIAR</button>
 
-
         <?php
           //Reseteamos variables a 0.
           $nombre = $email = $subject = $mensaje = $para = $headers = $msjCorreo = NULL;
@@ -114,8 +114,8 @@ include ('head.php');
               $email = $_POST['email'];
               $subject = 'Mensaje enviado desde LIOSAR.com';   
               $mensaje = $_POST['message'];
-              //$para = 'info@liosar.com';
-              $para = 'alberto.lagoria@gmail.com';
+              $para = 'info@liosar.com';
+              //$para = 'alberto.lagoria@gmail.com';
               //Componemos cuerpo correo.
               $msjCorreo = "Nombre: " . $nombre;
               $msjCorreo .= "\r\n";
@@ -124,7 +124,7 @@ include ('head.php');
               $msjCorreo .= "Mensaje: " . $mensaje;
               $msjCorreo .= "\r\n";
 
-              $secretKey = "6Ld-KqoUAAAAAPZYgeBa6wkD0zyKHnCpQITaUuWv";
+              $secret = "6Ld-KqoUAAAAAPZYgeBa6wkD0zyKHnCpQITaUuWv";
               $response = null;
               $reCaptcha = new ReCaptcha($secret);
 
@@ -140,6 +140,7 @@ include ('head.php');
                 echo "<script language='javascript'>
                 alert('Mensaje enviado, muchas gracias.');
                 </script>";
+               //echo "<span>Mensaje enviado, muchas gracias.</span>";
               } else {
                 echo "<script language='javascript'>
                     alert('El envío de su mensaje ha fallado.');
@@ -164,7 +165,7 @@ include ('head.php');
 </div>
 
 <?php
-include ('footer.php');
+//include ('footer.php');
 ?>
 
 <script>
